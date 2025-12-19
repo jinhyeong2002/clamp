@@ -17,5 +17,6 @@ jobs:
         java-version: '17'
 
     - name: Build with Maven
+      working-directory: cltmp
       run: mvn clean package -DskipTests
 
