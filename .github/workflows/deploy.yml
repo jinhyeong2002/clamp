@@ -1,11 +1,11 @@
-name: Spring Boot CI
+name: CI + Deploy (3 App Services)
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,12 +15,36 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: "temurin"
+          java-version: "17"
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew build -x test
+      - name: Build bootJar
+        run: ./gradlew bootJar -x test
+
+      # Japan East
+      - name: Deploy to App Service (Japan East)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: app-japan-east-termp
+          publish-profile: ${{ secrets.NGTMP_JP_EAST }}
+          package: build/libs/app.jar
+
+      # Japan West
+      - name: Deploy to App Service (Japan West)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: app-japan-west-termp
+          publish-profile: ${{ secrets.NGTMP_JP_WEST }}
+          package: build/libs/app.jar
+
+      # Korea Central
+      - name: Deploy to App Service (Korea Central)
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: app-korea-central-termp
+          publish-profile: ${{ secrets.NGTMP_KR_CENTRAL }}
+          package: build/libs/app.jar
 
