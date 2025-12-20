@@ -22,7 +22,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build bootJar
-        run: ./gradlew bootJar -x test
+        run: ./gradlew clean bootJar -x test
 
       # Japan East
       - name: Deploy to App Service (Japan East)
