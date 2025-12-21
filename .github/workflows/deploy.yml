@@ -23,6 +23,20 @@ jobs:
 
       - name: Build bootJar
         run: ./gradlew clean bootJar -x test
+      - name: Show commit + build files
+        run: |
+          echo "COMMIT=$(git rev-parse HEAD)"
+          echo "PWD=$(pwd)"
+          ls -la
+          echo "---- build.gradle ----"
+          sed -n '1,160p' build.gradle
+          echo "---- settings.gradle ----"
+          cat settings.gradle
+
+      - name: Check included DB drivers in jar
+        run: |
+          unzip -l build/libs/app.jar | egrep -i "postgresql|h2" || true
+
 
       # Japan East
       - name: Deploy to App Service (Japan East)
