@@ -48,3 +48,14 @@ jobs:
           publish-profile: ${{ secrets.NGTMP_KR_CENTRAL }}
           package: build/libs/app.jar
 
+      - name: Sanity check jar libs (postgres/h2)
+        run: |
+          ls -lh build/libs/app.jar
+          unzip -l build/libs/app.jar | egrep -i "postgresql|h2" | head -n 50
+
+      - name: Print jar sha256
+        run: sha256sum build/libs/app.jar
+
+      - name: Show commit
+        run: git rev-parse HEAD
+
